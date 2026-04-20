@@ -75,29 +75,29 @@ if not df.empty:
     
     df = df.dropna(subset=['industry', 'remote_work', 'experience_years'])
 
-    # Filtro Industry
-    industries = df['industry'].unique().tolist()
-    # Asegurarnos de que no hay nulos ni flotantes perdidos
-    industries = [str(i) for i in industries if pd.notna(i)]
-    selected_industries = st.sidebar.multiselect("Sector Industrial", industries, default=industries[:3])
+    # Filtro Industry (selectbox en lugar de multiselect)
+    industries = sorted([str(i) for i in df['industry'].unique() if pd.notna(i)])
+    industry_options = ["Todas"] + industries
+    selected_industry = st.sidebar.selectbox("Sector Industrial", industry_options, index=0)
 
-    # Filtro Remote Work
-    remote_options = df['remote_work'].unique().tolist()
-    remote_options = [str(r) for r in remote_options if pd.notna(r)]
-    selected_remote = st.sidebar.multiselect("Modalidad de Trabajo", remote_options, default=remote_options)
+    # Filtro Remote Work (radio en lugar de multiselect)
+    remote_raw = sorted([str(r) for r in df['remote_work'].unique() if pd.notna(r)])
+    remote_options = ["Todas"] + remote_raw
+    selected_remote = st.sidebar.radio("Modalidad de Trabajo", remote_options, index=0)
 
-    # Filtro Experience Years
+    # Filtro Experience Years (number_input en lugar de slider)
     min_exp = int(df['experience_years'].min())
     max_exp = int(df['experience_years'].max())
-    exp_range = st.sidebar.slider("Años de Experiencia", min_exp, max_exp, (min_exp, max_exp))
+    exp_min = st.sidebar.number_input("Experiencia mínima (años)", min_value=min_exp, max_value=max_exp, value=min_exp)
+    exp_max = st.sidebar.number_input("Experiencia máxima (años)", min_value=min_exp, max_value=max_exp, value=max_exp)
 
     # APLICAR FILTROS
-    filtered_df = df[
-        (df['industry'].isin(selected_industries if selected_industries else industries)) &
-        (df['remote_work'].isin(selected_remote if selected_remote else remote_options)) &
-        (df['experience_years'] >= exp_range[0]) &
-        (df['experience_years'] <= exp_range[1])
-    ]
+    mask = (df['experience_years'] >= exp_min) & (df['experience_years'] <= exp_max)
+    if selected_industry != "Todas":
+        mask &= (df['industry'] == selected_industry)
+    if selected_remote != "Todas":
+        mask &= (df['remote_work'] == selected_remote)
+    filtered_df = df[mask]
 
     # KPIS PRINCIPALES
     col1, col2, col3, col4 = st.columns(4)
