@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descripción del Dataset: Predicción de Salarios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6;
+            --secondary: #8b5cf6;
+            --accent: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 1s ease-out backwards;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-card:nth-child(2) { animation-delay: 0.2s; }
+        .glass-card:nth-child(3) { animation-delay: 0.4s; }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #e2e8f0;
+        }
+
+        h2 i {
+            color: var(--primary);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .info-item h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-item p {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .data-dictionary {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .variable-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .variable-card:hover {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: var(--primary);
+        }
+
+        .variable-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .variable-card:hover::before {
+            opacity: 1;
+        }
+
+        .var-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .var-type {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .var-desc {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .var-example {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            background: rgba(0,0,0,0.2);
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+
+        .target-var {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .target-var .var-type {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .target-var::before {
+            background: linear-gradient(to bottom, #10b981, #059669);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Ambient glowing orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: rgba(59, 130, 246, 0.3);
+            top: 10%;
+            left: 5%;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(139, 92, 246, 0.3);
+            bottom: 10%;
+            right: 5%;
+            animation-delay: -5s;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .container { padding: 2rem 1rem; }
+            .glass-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="container">
+        <header>
+            <h1>Predicción de Salarios</h1>
+            <p class="subtitle">Análisis comprensivo y descriptivo del conjunto de datos para la estimación de ingresos en el sector tecnológico y corporativo.</p>
+        </header>
+
+        <section class="glass-card">
+            <h2><i class="fa-solid fa-database"></i> Descripción del Dataset</h2>
+            <p style="margin-bottom: 1.5rem; font-size: 1.1rem; color: #cbd5e1;">
+                Este conjunto de datos recopila información detallada sobre diversos perfiles profesionales en múltiples industrias y ubicaciones alrededor del mundo. Su propósito principal es permitir la creación de modelos predictivos que estimen el salario anual de un empleado basado en sus características demográficas, educativas y laborales.
+            </p>
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>Contexto</h3>
+                    <p>Mercado Laboral Global</p>
+                </div>
+                <div class="info-item">
+                    <h3>Archivo</h3>
+                    <p>job_salary_prediction_dataset.csv</p>
+                </div>
+                <div class="info-item">
+                    <h3>Dominio</h3>
+                    <p>Recursos Humanos (HR) Tech</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card">
+            <h2><i class="fa-solid fa-globe"></i> Fuente de Datos</h2>
+            <p style="color: #cbd5e1;">
+                Los datos fueron extraídos y consolidados a partir de encuestas anónimas, plataformas de reclutamiento y estudios de mercado salarial (ej. Glassdoor, LinkedIn, registros internos de RRHH). Incluye perfiles desde niveles junior hasta ejecutivos, reflejando las tendencias actuales del mercado, incluyendo el impacto del trabajo remoto.
+            </p>
+        </section>
+
+        <section class="glass-card">
+            <h2><i class="fa-solid fa-book-open"></i> Diccionario de Variables</h2>
+            <div class="data-dictionary">
+                <!-- Variable 1 -->
+                <div class="variable-card">
+                    <div class="var-name">
+                        job_title
+                        <span class="var-type">Categórica</span>
+                    </div>
+                    <div class="var-desc">El rol específico o cargo del empleado dentro de la organización.</div>
+                    <div class="var-example">Ej: "AI Engineer", "Data Analyst"</div>
+                </div>
+
+                <!-- Variable 2 -->
+                <div class="variable-card">
+                    <div class="var-name">
+                        experience_years
+                        <span class="var-type">Numérica</span>
+                    </div>
+                    <div class="var-desc">Cantidad de años completos de experiencia profesional relevante.</div>
+                    <div class="var-example">Ej: 10, 5, 18</div>
+                </div>
+
+                <!-- Variable 3 -->
+                <div class="variable-card">
+                    <div class="var-name">
+                        education_level
+                        <span class="var-type">Categórica</span>
+                    </div>
+                    <div class="var-desc">Máximo nivel educativo formal alcanzado por el individuo.</div>
+                    <div class="var-example">Ej: "Bachelor", "PhD"</div>
+                </div>
+
+                <!-- Variable 4 -->
+                <div class="variable-card">
+                    <div class="var-name">
+                        skills_count
+                        <span class="var-type">Numérica</span>
+                    </div>
+                    <div class="var-desc">Número total de habilidades técnicas y blandas listadas en su perfil.</div>
+                    <div class="var-example">Ej: 2, 17, 4</div>
+                </div>
+
+                <!-- Variable 5 -->
+                <div class="variable-card">
+                    <div class="var-name">
+                        industry
+                        <span class="var-type">Categórica</span>
+                    </div>
+                    <div class="var-desc">Sector económico principal al que pertenece la empresa contratante.</div>
+                    <div class="var-example">Ej: "Healthcare", "Telecom"</div>
+                </div>
+
+                <!-- Variable 6 -->
+                <div class="variable-card">
+                    <div class="var-name">
+                        company_size
+                        <span class="var-type">Categórica</span>
+                    </div>
+                    <div class="var-desc">Clasificación del tamaño corporativo basado en el número de empleados o ingresos.</div>
+                    <div class="var-example">Ej: "Small", "Medium"</div>
+                </div>
+
+                <!-- Variable 7 -->
+                <div class="variable-card">
+                    <div class="var-name">
+                        location
+                        <span class="var-type">Categórica</span>
+                    </div>
+                    <div class="var-desc">País o región geográfica donde reside o está basado legalmente el empleado.</div>
+                    <div class="var-example">Ej: "India", "Australia"</div>
+                </div>
+
+                <!-- Variable 8 -->
+                <div class="variable-card">
+                    <div class="var-name">
+                        remote_work
+                        <span class="var-type">Categórica</span>
+                    </div>
+                    <div class="var-desc">Modalidad y flexibilidad de trabajo establecida (Presencial, Remoto, Híbrido).</div>
+                    <div class="var-example">Ej: "Hybrid", "No", "Yes"</div>
+                </div>
+
+                <!-- Variable 9 -->
+                <div class="variable-card">
+                    <div class="var-name">
+                        certifications
+                        <span class="var-type">Numérica</span>
+                    </div>
+                    <div class="var-desc">Cantidad de certificaciones profesionales oficiales obtenidas.</div>
+                    <div class="var-example">Ej: 2, 0, 1</div>
+                </div>
+
+                <!-- Variable 10 (Target) -->
+                <div class="variable-card target-var">
+                    <div class="var-name">
+                        salary
+                        <span class="var-type">Target</span>
+                    </div>
+                    <div class="var-desc">Compensación salarial bruta anual (en la moneda estandarizada, usualmente USD). Es la variable a predecir.</div>
+                    <div class="var-example">Ej: 109413, 93764</div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
